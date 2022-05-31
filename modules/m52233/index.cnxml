@@ -1,0 +1,21 @@
+<document xmlns="http://cnx.rice.edu/cnxml">
+
+<title>Conclusions</title>
+<metadata xmlns:md="http://cnx.rice.edu/mdml">
+  <md:content-id>m52233</md:content-id>
+  <md:title>Conclusions</md:title>
+  <md:abstract>Conclusions on the results of our implementation.</md:abstract>
+  <md:uuid>8bf4cd7c-9286-4682-beb9-5c80073e75da</md:uuid>
+</metadata>
+
+<content>
+  <section id="eip-269"><title>Performance on Characteristics</title><para id="eip-477">
+Overall, we thought that our implementation of this D/A converter was a great success. As far as the characteristics of a D/A converter, we succeeded with several of them which in turn causes the others to be impaired. The power consumption of our system was low because we filtered out the power hungry high frequencies and implemented it completely passively. This, in turn, impacts the size of our design. It was small due the small number of components. The cost of our system was very low, just a handful of simple components and low power consumption. Finally, for speed, a 44.1kHz reproduction rate is all that one desires when reproducing audio signals like we were. Our implementation had the shortcomings of accuracy and resolution. The system was inaccurate because of the Linux kernel multitasker delaying the signal at random intervals. Our choice of a low bit count in conjunction with an R/2R ladder forces the resolution to be low and introduces quantization error.	
+</para></section><section id="eip-147"><title>Future Improvements</title><para id="eip-684">
+There are future improvements that can be made to make this system even better. In order to tackle the Linux kernel multitasker issue, we cannot just set the priority of our designated process. Other background processes are forced to run, but we have the option to install a real-time kernel. This is a fairly substantial task and exists outside the scope of ELEC 301. However, the realtime kernel would be more accurate because it would be able to run our process exclusively and in realtime. We also could perform up-sampling on the fly which is interpolation that approximates what sampling at a higher rate would do. We discussed using upsampling in conjunction with splines in ELEC 301, but the implementation would be rather difficult. Finally, in order improve our resolution, we could increase the number of bits that our BeagleBone Black outputs. However, the more bits that we use, the lower the frequency that we can transmit them at is because the BeagleBone Black has limited processing speed. Also, if we upgrade to a 16-bit system for instance, we would need to choose a design other than the R/2R implementation because as discussed earlier, the capacitance and tolerance of the system begin to matter.
+</para></section><para id="delete_me">
+     <!-- Insert module text here -->
+  </para>
+</content>
+
+</document>

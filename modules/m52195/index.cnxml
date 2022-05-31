@@ -1,0 +1,34 @@
+<document xmlns="http://cnx.rice.edu/cnxml">
+
+<title>Results</title>
+<metadata xmlns:md="http://cnx.rice.edu/mdml">
+  <md:content-id>m52195</md:content-id>
+  <md:title>Results</md:title>
+  <md:abstract>Results of the implementation of our project.</md:abstract>
+  <md:uuid>5cc999f6-b0df-42e1-b346-ff20aa0c72cb</md:uuid>
+</metadata>
+
+<content>
+  <section id="eip-998"><title>Full Digital Signal Output</title><figure id="figure_d_out"><media id="digital_out" alt="The Digital Output">
+      <image mime-type="image/png" src="../../media/digital_output_thick.png" height="250" width="500"/>
+   </media>
+</figure><para id="eip-74">The full digital signal output exists in the digital realm, but it is a bit stream that gets 8 new bits 44,100 times each second. As discussed earlier, the exact nature of this bit stream is based on the original audio file, but there are a total of 256 different output voltage levels. </para></section><section id="eip-144"><title>R/2R Ladder Output</title><para id="eip-174"><figure id="figure_size_adjusted"> <media id="digital_wave" alt="The Digital Sine Wave">
+      <image mime-type="image/jpeg" src="../../media/digital_sine.jpg" height="500" width="500"/>
+   </media>
+</figure>
+
+The full digital signal enters the R/2R Ladder and the voltage at output becomes the weighted sum of each bit. The 256 quantization levels make the signal appear blocky and really shows that higher frequencies have been introduced into the signal.
+</para><para id="eip-175">The full digital signal enters the R/2R Ladder and the voltage at output becomes the weighted sum of each bit. The 256 quantization levels make the signal appear blocky and really shows that higher frequencies have been introduced into the signal.
+</para></section><section id="eip-721"><title>Audio Output</title><para id="eip-872"><figure id="size_adjusted_figure"><media id="sine_wave" alt="The Sine Wave">
+      <image mime-type="image/jpeg" src="../../media/smooth_sine.jpg" height="500" width="500"/>
+   </media>
+</figure></para><section id="eip-543"><title>Kernel Multitasker</title><para id="eip-598">
+In our final results, we noticed that the final audio output had significant random delays. This is due to the kernel multitasker on the BeagleBone Black. Since it runs Linux, and Linux is not a realtime system, the processor will choose to run a background process that is not our code from time to time. We used the BBIOlib which directly addresses the general purpose I/Os which avoid many of the Linux performance issues, but not this one. 
+We wanted to collect data on our systems signal to noise ratio, but because of this significant and random delay, it would make our data significantly off. The final sound is pretty clear when coming through the speakers, other than the intermittent delay. However, we could calculate the signal to quantization noise ratio (SQNR) which was around 48 dB. 
+
+</para></section></section><para id="delete_me">
+     <!-- Insert module text here -->
+  </para>
+</content>
+
+</document>

@@ -1,0 +1,31 @@
+<document xmlns="http://cnx.rice.edu/cnxml">
+
+<title>The Team</title>
+<metadata xmlns:md="http://cnx.rice.edu/mdml">
+  <md:content-id>m52218</md:content-id>
+  <md:title>The Team</md:title>
+  <md:abstract>Team Vu-Tam Clan, Dr. Simar, and Dr. Malloy all were integral to this project.</md:abstract>
+  <md:uuid>19c8a428-7fbb-4094-91dc-6d13385369e9</md:uuid>
+</metadata>
+<featured-links>
+  <!-- WARNING! The 'featured-links' section is read only. Do not edit below.
+       Changes to the links section in the source will not be saved. -->
+    <link-group type="example">
+      <link url="https://www.dropbox.com/s/fsag52850khlm2y/Poster.pdf?dl=0" strength="3">Poster </link>
+    </link-group>
+  <!-- WARNING! The 'featured-links' section is read only. Do not edit above.
+       Changes to the links section in the source will not be saved. -->
+</featured-links>
+<content>
+  <section id="eip-356"><title>The Vu-Tam Clan</title><para id="eip-911">
+The members of our team are Eric Miller, Tyler Taldone, Tam Vu, and Paul Rockaway. We are all Electrical and Computer Engineers at Rice University. Tam and Tyler are also both pursuing a double major in Mathematics. We have some background in analog design, and deep experience in digital implementations. Eric Miller worked on Verilog projects and also poster printing over the summer for both the EE Department and the Digital Media Commons. Tyler Taldone has experience in PCB design and efficiency. Tam and Paul both worked in a neuroengineering design lab and have significant design experiences. 
+</para></section><section id="eip-292"><title>Dr. Ray Simar</title><para id="eip-977">
+Dr. Simar was our mentor for this project and gave us guidance and support. He is a Professor in the Practice of Digital Signal Processing Architecture and teaches Computer Architecture. In this class we were given the BeagleBone Black and encouraged to experiment and design with it. He was recently elevated to Senior Member in IEEE.
+</para></section><section id="eip-663"><title>Dr. Derrick Malloy</title><para id="eip-115">Dr. Derrick Malloy provided us a copy of his book, Exploring BeagleBone: Tools and Techniques for Building with Embedded Linux, so that we could better understand the hardware and software on the BeagleBone Black. Also, when trying to solve the Linux multitasker issue, he personally advised us on the different methods we could employ. We are also thankful that he cautioned us away from implementing it because it would have been a substantial task. We also appreciate his praise for our design, saying that it was “very well executed.” We sincerely enjoyed this project and do look forward to making improvements on it in the future. 
+
+Note that attached to this module is a link to download our poster for this project in pdf format.</para></section><para id="delete_me">
+     <!-- Insert module text here -->
+  </para>
+</content>
+
+</document>

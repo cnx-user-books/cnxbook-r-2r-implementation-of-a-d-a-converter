@@ -1,0 +1,28 @@
+<document xmlns="http://cnx.rice.edu/cnxml">
+
+<title>Motivation</title>
+<metadata xmlns:md="http://cnx.rice.edu/mdml">
+  <md:content-id>m52185</md:content-id>
+  <md:title>Motivation</md:title>
+  <md:abstract>A summary of our motivations and choices for this topic.</md:abstract>
+  <md:uuid>fba9250b-bb98-436c-8d2e-b929d0179033</md:uuid>
+</metadata>
+
+<content>
+  <section id="eip-942"><title>D/A Conversion</title><para id="eip-764">
+We were interested in this project because we wanted to explore the science and practicality behind D/A conversion but also to learn from the hardware/software interactions afforded by the BeagleBone Black. We wanted to take a stored digital signal and take it through the D/A conversion process primarily for the purpose of teaching others and learning ourselves. This process is enormously important in the world of contemporary technology and we are executing a novel process with this specific BeagleBone black. Controlling hardware/software interactions is integral in the design process for many electronics, so we wanted to incorporate this as well.
+</para></section><section id="eip-425"><title>Why choose the R/2R Ladder?</title><para id="eip-724">
+Since we are using 8 bits to quantize our signal, an overall effective D/A converter that changes our digital signal to analog is the R/2R ladder. As discussed earlier, an R/2R ladder is a binary-weighted converter that uses resistors of only two different values: R and 2R (the actual values are insignificant, what matters is the 2:1 ratio). These resistors are cascaded together in the structure below, allowing for the output voltage to be a weighted sum of the input voltages.
+</para>
+
+<figure id="ladder_size_adjusted"><media id="ladder_design" alt="The ladder">
+      <image mime-type="image/png" src="../../media/Ladder.png"/>
+   </media>
+</figure><para id="eip-483">Although there are other ways to implement a D/A converter, for digital signals of 8 bits or less the R/2R ladder is one of the best options. Some of the advantages of the R/2R ladder is that it is composed of only resistors of two different values, allowing it to be very easily implemented on a small-scale at a low cost (small resistors of specific values are can be cheaply produced). Some potential drawbacks of using an 2/2R ladder is that with longer ladders, the cumulative capacitance of the system could potentially delay the transmission of the signal as it is converted from digital to analog. However, since we are using 8 bit signals, there are only 8 rungs on our ladder, so there is no significant delay time due to the capacitance. Another potential problem with R/2R ladders in general is that with the more significant bits, the precision of the resistors are increasingly important. A small fluctuation in these resistors can completely overwhelm the output values of the smaller bits. Fortunately for us, since there are only 8 rungs in the ladder, only so much precision is required for our resistors in the most significant bit.</para><section id="eip-991"><title>Why choose RC Low Pass Filter</title><para id="eip-252">
+After a digital signal is converted to analog, its amplitude is still quantized. Before it can be outputted as a continuous signal, its amplitude must be smoothed out between the different values. In the frequency domain, this is effectively low-pass filtering the signal. Although there are many different ways to implement a low-pass filter, we decided for our project that the most efficient way would be with a simple RC circuit. Like the R/2R ladder, a basic RC circuit can be implemented very cheaply and on a small scale, since it is composed of only a resistor and a capacitor. Since it is also very simple, our signal can propagate through it very fast. There is one potential problem with the RC (first-order) low-pass filter is that it attenuates more slowly than higher order filters, therefore not completely removing out higher frequencies. However, since the human ear cannot hear above 20,000 Hz, this is not a problem for our implementation. We just require a filter good enough to remove the majority of the higher frequencies so as to not waste power and potentially damage the speakers, as well as to smooth out the different quantized levels in the time domain. A simple RC low-pass filter serves that purpose.
+</para></section><para id="eip-806">Although there are other ways to implement a D/A converter, for digital signals of 8 bits or less the R/2R ladder is one of the best options. Some of the advantages of the R/2R ladder is that it is composed of only resistors of two different values, allowing it to be very easily implemented on a small-scale at a low cost (small resistors of specific values are can be cheaply produced). Some potential drawbacks of using an 2/2R ladder is that with longer ladders, the cumulative capacitance of the system could potentially delay the transmission of the signal as it is converted from digital to analog. However, since we are using 8 bit signals, there are only 8 rungs on our ladder, so there is no significant delay time due to the capacitance. Another potential problem with R/2R ladders in general is that with the more significant bits, the precision of the resistors are increasingly important. A small fluctuation in these resistors can completely overwhelm the output values of the smaller bits. Fortunately for us, since there are only 8 rungs in the ladder, only so much precision is required for our resistors in the most significant bit.</para></section><para id="delete_me">
+     <!-- Insert module text here -->
+  </para>
+</content>
+
+</document>

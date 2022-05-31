@@ -1,0 +1,321 @@
+<document xmlns="http://cnx.rice.edu/cnxml">
+
+<title>Implementation</title>
+<metadata xmlns:md="http://cnx.rice.edu/mdml">
+  <md:content-id>m52242</md:content-id>
+  <md:title>Implementation</md:title>
+  <md:abstract>Goes over the implementation of our project.</md:abstract>
+  <md:uuid>5e3fa601-eb24-4836-9a75-dd86e3875f6f</md:uuid>
+</metadata>
+
+<content>
+  <section id="eip-162"><title>Overall Design</title><figure id="design_example"> <media id="Overall_Design" alt="Layout of our design"> <image mime-type="image/jpg" src="../../media/Overall Design.jpg" height="500" width="500"/> </media> </figure>
+
+<para id="eip-718">
+This is an image of our actual implementation of this project. As you can see, the BeagleBone Black on the left is not attached to any supporting computer. We have the data stored directly on the board, and have 5 volts coming in to power it from a power outlet. This power lets the BeagleBone Black perform to the best of its capabilities when generating its bit stream. So 8 bits of digital output streams leave the general purpose I/O and enter the R/2R ladder. The system takes in these 8 digital outputs and generates a voltage that is the weighted sum of each bit. The signal continues through the design, and into the RC low pass filter where the high frequency copies are filtered out. Finally, the signal goes through the audio jack, into speakers, where it gets amplified and played as sound. Also not that we incorporated input buttons into our design for an educational, live demonstration of the process.
+</para></section><section id="eip-650"><title>Full digital Signal</title><para id="eip-857">
+In order to construct the full digital signal that is outputted by the BeagleBone Black, first we had to store the original digital data. We took audio files, turned them into a RAW format where they are unsigned bits so that they are easily handled. The BeagleBone Black outputs 8 new bits 44,100 times per second. These 8 output bits are changed to a 0 or a 1 based upon which audio file we read. As covered earlier, this yields 256 total voltage levels of output.
+</para></section><para id="eip-31">The program we wrote outputs the digital realization of several types of functions as well as 8 bit unsigned audio files to select pins on the BeagleBone Black. It is controlled by polling 5 input pins connected to tactile switches that cycle function, frequency (if applicable) and play/stop. This program relies on the Beagle Bone Black GPIO library.</para><para id="eip-253">First in our code, we want to establish pins, functions and songs. </para><code id="eip-378" display="block"><title>Definitions</title>#define PI 3.14159265
+#define PORT 8
+#define PORT2 9
+
+//output pins
+#define PIN0 19		                                                    //least significant bit
+#define PIN1 17
+#define PIN2 16
+#define PIN3 15
+#define PIN4 14
+#define PIN5 13
+#define PIN6 12
+#define PIN7 11		                                                    //most significant bit
+
+//input pins
+#define PIN8 15						                                    //play/stop button pin
+#define PIN9 12						                                    //increase frequency pin
+#define PIN10 11					                                    //decrease frequency pin
+#define PIN11 14					                                    //next function pin
+#define PIN12 13					                                    //last function pin
+
+#define NUMFUNCTIONS 5					                                //used to check if function increment should roll over 
+
+#define SONG0 "Beethoven5.raw"					                        //define the audio file names
+#define SONG1 "TomSawyer.raw"
+#define SONG2 "HarderBetterFaster.raw"</code><para id="eip-399">Now, we want to establish core functions for both the conversion process and the live educational demonstration.</para><code id="eip-959" display="block"><title>Functions</title>//Function: check_low
+//Checks the state of a button/pin and waits for end of button press
+//Input:
+//  pin: the number of the pin to check
+//Returns:
+//  1 if button is pressed/pin is low after waiting for the button to be 
+//      released/pin to return to high
+//  0 if button is not pressed/pin is high
+int check_low(int pin){
+	if (is_low(PORT2, pin)){
+		while(is_low(PORT2, pin)){
+			iolib_delay_ms(1);
+		}
+		return 1;
+	}
+	else return 0;
+}
+
+//Function: stop
+//Polls the stop pin/button
+//Returns: 
+//1 if button is pressed/pin is low after waiting for the button to be 
+//	released/pin to return to high
+//0 if button is not pressed/pin is high
+int stop(){	
+    return check_low(PIN8);				
+}
+
+//Function: play
+//Updates the 8 output pins with a new value
+//Input:
+//  out: the 8 bit value to output
+void play(int out){
+	if (out  and  0x1) pin_high(PORT,PIN0);
+        else pin_low(PORT, PIN0);
+        if ((out  and  0x2) &gt;&gt; 1) pin_high(PORT,PIN1);
+        else pin_low(PORT, PIN1);
+        if ((out  and  0x4) &gt;&gt; 2) pin_high(PORT,PIN2);
+        else pin_low(PORT, PIN2);
+        if ((out  and  0x8) &gt;&gt; 3) pin_high(PORT,PIN3);
+        else pin_low(PORT, PIN3);
+        if ((out  and  0x10) &gt;&gt; 4) pin_high(PORT,PIN4);
+        else pin_low(PORT, PIN4);
+        if ((out  and  0x20) &gt;&gt; 5) pin_high(PORT,PIN5);
+        else pin_low(PORT, PIN5);
+        if ((out  and  0x40) &gt;&gt; 6) pin_high(PORT,PIN6);
+        else pin_low(PORT, PIN6);
+        if ((out  and  0x80) &gt;&gt; 7) pin_high(PORT,PIN7);
+        else pin_low(PORT, PIN7);
+}
+//Function: playSine
+//Calculates the next value of sine for the given frequency and calls
+//play
+//Input:
+//	freq: the frequency of the desired sine wave
+void playSine(int freq){
+	int t = 0;
+	int out = 0;
+	while(!stop()){
+		out = 128*sin(t++*freq*PI/22050)+128;							//calculate the next value to output and incrmemnt discrete time
+		play(out);
+               	clock_gettime(CLOCK_REALTIME, and ttime);					//get the time
+               	ttime.tv_nsec = 0;										//clear the nanoseconds but not seconds so that we dont overflow;
+               	clock_settime(CLOCK_REALTIME, and ttime);					//set the time back
+               	clock_gettime(CLOCK_REALTIME, and ttime);					//get the time again
+               	ttime.tv_nsec += 21463; 								//increment by number of nanoseconds we should wait
+               	while(1){												//loop to delay next output
+       		        clock_gettime(CLOCK_REALTIME, and curtime);
+               	        if (curtime.tv_nsec &gt; ttime.tv_nsec)
+        	  	      break;
+               	}
+	}
+}
+
+//Function: playTriangle
+//Calculates and outputs the next value of a triangle wave for the given
+//frequency
+//Input:
+//	freq: the frequency of the triangle wave
+void playTriangle(int freq){
+	int out = 0;
+	int t = 0;
+	while(!stop()){
+		out = (256/(11025/freq))*((11025/freq) - abs(t++ %(2*11025/freq) - (11025/freq)));	//calculate next value and increment discrete time
+		play(out);
+		clock_gettime(CLOCK_REALTIME, and ttime);   						//get the time
+                ttime.tv_nsec = 0;                      				//clear the nanoseconds but not seconds so that we dont overflow;
+                clock_settime(CLOCK_REALTIME, and ttime);   				//set the time back
+                clock_gettime(CLOCK_REALTIME, and ttime);   				//get the time again
+                ttime.tv_nsec += 21463;                 				//increment by number of nanoseconds we should wait
+                while(1){                               				//loop to delay next output
+                        clock_gettime(CLOCK_REALTIME, and curtime);
+                        if (curtime.tv_nsec &gt; ttime.tv_nsec)
+                              break;
+                }
+
+	}
+}
+
+//Function: playSquare
+//Updates output to maximum and minimum values at the given frequency to
+//create a square wave
+//Input:
+//	freq: the frequency of the square wave
+void playSquare(int freq){
+	int out = 0;
+	int delay;
+	while(!stop()){
+		out ^= 0xFFFF;													//exclusive or all the bits to make a square wave
+		play(out);
+		delay = 1000000000/freq/2;										//calculate how long to delay to match frequency
+		clock_gettime(CLOCK_REALTIME, and ttime);   						//get the time
+                ttime.tv_nsec = 0;                      				//clear the nanoseconds but not $
+                clock_settime(CLOCK_REALTIME, and ttime);   				//set the time back
+                clock_gettime(CLOCK_REALTIME, and ttime);   				//get the time again
+                ttime.tv_nsec += delay;                 				//increment by number of nanosec$
+                while(1){                               				//loop to delay next output
+                        clock_gettime(CLOCK_REALTIME, and curtime);
+                        if (curtime.tv_nsec &gt; ttime.tv_nsec)
+                              break;
+                }
+
+	}
+}
+
+//Function: playSong0
+//Outputs a raw 8 bit unsigned audio file as defined above
+void playSong0(void){
+	char cwd[1024];												
+	if (getcwd(cwd, sizeof(cwd))== NULL) perror("getcwd() error");		//Get the current working directory
+	char* path;
+	path = malloc(strlen(cwd) + strlen(SONG0)+2);						//Append the defined file name to the path
+	strcpy(path, cwd);
+	char temp[2] = "/";
+	strcat(path, temp);
+	strcat(path, SONG0);
+	FILE *fp;
+	fp = fopen(path, "r");
+	if (fp == 0) perror("error opening file, is the name correct?");
+	int out = fgetc(fp);
+	while((out != EOF) and  and  !stop()){										//play each of the stored values until end of file or the stop button is pressed
+		play(out);
+		clock_gettime(CLOCK_REALTIME, and ttime);
+               	ttime.tv_nsec = 0;
+               	clock_settime(CLOCK_REALTIME, and ttime);
+               	clock_gettime(CLOCK_REALTIME, and ttime);
+               	ttime.tv_nsec += DELAY;
+               	while(1){
+              	  clock_gettime(CLOCK_REALTIME, and curtime);
+               	  if (curtime.tv_nsec &gt; ttime.tv_nsec)
+               	    break;
+               	}
+		out = fgetc(fp);
+	}
+	fclose(fp);
+}
+
+//Function: playSong1
+//Outputs a raw 8 bit unsigned audio file as defined above
+void playSong1(void){
+	char cwd[1024];
+        if (getcwd(cwd, sizeof(cwd))== NULL) perror("getcwd() error");
+        char* path;
+        path = malloc(strlen(cwd) + strlen(SONG1)+2);
+        strcpy(path, cwd);
+        char temp[2] = "/";
+        strcat(path, temp);
+        strcat(path, SONG1);
+        FILE *fp;
+        fp = fopen(path, "r");
+        if (fp == 0) perror("error opening file, is the name correct?");
+        int out = fgetc(fp);
+        while((out != EOF) and  and  !stop()){
+                play(out);
+		clock_gettime(CLOCK_REALTIME, and ttime);
+               	ttime.tv_nsec = 0;
+               	clock_settime(CLOCK_REALTIME, and ttime);
+               	clock_gettime(CLOCK_REALTIME, and ttime);
+               	ttime.tv_nsec += DELAY;	
+               	while(1){
+              	  clock_gettime(CLOCK_REALTIME, and curtime);
+               	  if (curtime.tv_nsec &gt; ttime.tv_nsec)
+               	    break;
+               	}
+                out = fgetc(fp);
+        }
+        fclose(fp);
+}
+
+//Function: playSong2
+//Outputs a raw 8 bit unsigned audio file as defined above
+void playSong2(void){
+	char cwd[1024];
+        if (getcwd(cwd, sizeof(cwd))== NULL) perror("getcwd() error");
+        char* path;
+        path = malloc(strlen(cwd) + strlen(SONG2)+2);
+        strcpy(path, cwd);
+        char temp[2] = "/";
+        strcat(path, temp);
+        strcat(path, SONG2);
+        FILE *fp;
+        fp = fopen(path, "r");
+        if (fp == 0) perror("error opening file, is the name correct?");
+        int out = fgetc(fp);
+        while((out != EOF) and  and  !stop()){
+                play(out);
+		clock_gettime(CLOCK_REALTIME, and ttime);
+               	ttime.tv_nsec = 0;
+               	clock_settime(CLOCK_REALTIME, and ttime);
+               	clock_gettime(CLOCK_REALTIME, and ttime);
+               	ttime.tv_nsec += DELAY;
+               	while(1){
+              	  clock_gettime(CLOCK_REALTIME, and curtime);
+               	  if (curtime.tv_nsec &gt; ttime.tv_nsec)
+               	    break;
+               	}
+                out = fgetc(fp);
+        }
+        fclose(fp);
+}</code><para id="eip-759">Finally, in a portion of the main section of our code, we need to call these established functions in order to update pins and respond to button presses.</para><code id="eip-649" display="block"><title>Main</title>//Function: main
+//Polls buttons for input and calls respective functions
+int main(void){
+	int ret[13];
+    iolib_init();														//initialize i/o library
+    //intialize the pins to output and input
+    ret[0] = iolib_setdir(PORT, PIN0, DIR_OUT);
+    ret[1] = iolib_setdir(PORT, PIN1, DIR_OUT);
+    ret[2] = iolib_setdir(PORT, PIN2, DIR_OUT);
+    ret[3] = iolib_setdir(PORT, PIN3, DIR_OUT);
+    ret[4] = iolib_setdir(PORT, PIN4, DIR_OUT);
+    ret[5] = iolib_setdir(PORT, PIN5, DIR_OUT);
+    ret[6] = iolib_setdir(PORT, PIN6, DIR_OUT);
+    ret[7] = iolib_setdir(PORT, PIN7, DIR_OUT);
+
+	ret[8] = iolib_setdir(PORT2,PIN8, DIR_IN);
+	ret[9] = iolib_setdir(PORT2,PIN9, DIR_IN);
+	ret[10] = iolib_setdir(PORT2, PIN10, DIR_IN);
+	ret[11] = iolib_setdir(PORT2, PIN11, DIR_IN);
+	ret[12] = iolib_setdir(PORT2, PIN12, DIR_IN);
+    int function = 3;
+	int frequency = 500;
+	while (1){ 															//poll for user input from buttons
+		//check each pin for update
+		if(check_low(PIN8)){
+			printf("PIN8 pressed");
+			if (function == 0){
+			else if (function == 4){
+				playSong1();
+			}
+			else if (function == 5){
+				playSong2();
+			}
+		}
+else if (check_low(PIN9)){										//increase frequency by 100 Hz
+			printf("PIN9 pressed");
+			frequency += 100;
+			if (frequency and gt; 20000){
+				frequency = 20000;
+			}
+		}
+iolib_free();
+    return (0);
+}
+</code><section id="eip-374"><title>R/2R Ladder</title><para id="eip-744">
+Our implementation of the R/2R ladder consists of resistors of 110Ω and 220Ω, cascaded together to form eight different rungs, each fed by an output bit from the BeagleBone Black, as shown by the diagram.
+</para>
+
+<figure id="ladder_design"><media id="Ladder_Design" alt="Ladder Design"> <image mime-type="image/jpg" src="../../media/Ladder.png" height="250" width="500"/> </media> </figure><para id="eip-802">In this configuration, the output voltage, Vout, can be calculated by the following formula:Vout = Vref * (A/2^8) where Vref is the 3.3V positive voltage of the BeagleBone Black and A is the binary value currently outputted by the ai's (0 ≤ A ≤ 255). This is because the lower significant bits are scaled-down by the 110Ω resistors between them and Vout; each rung between a bit and the output voltage scale the bit by a factor of 1/2 before it reaches the output. With this system, we can use change the values of the 8 bits to output any one of 256 different voltages, scaled by 3.3V.</para><para id="eip-961">One thing we considered when building the R/2R ladder is the tolerance of the resistors used in the last few rungs. Since the value of the most significant bit is hundreds of times more significant than the value of the least significant bit, we took extra precautions to select and use only the resistors with very tight tolerances for the last few rungs, especially the last rung. If we had not done so and the values of the last two resistors were off by a significant percentage, then our output signal would be considerably distorted along the amplitude axis; the highest possible output value might actually be higher or lower than expected and vice versa for the lowest possible output value. However, during our tests of the system, the oscilloscope showed no significant distortion of the output voltages, and our final output signal played as expected.</para></section><section id="eip-980"><title>RC Low Pass Filter</title><para id="eip-461">When we implemented the RC low-pass filter, we chose the values of the resistor and capacitor to obtain a cutoff frequency (at which the gain is 0.707) of approximately 20,000 Hz. We decided to use a capacitor of 550nF and a resistor of 16Ω, as shown below.
+
+<media id="LPF_Design" alt="LPF Design"> <image mime-type="image/png" src="../../media/lpf.png" height="250" width="250"/> </media> </para><para id="eip-880">The magnitude of the transfer function given by this system is:
+
+<media id="equation" alt="equation"> <image mime-type="image/png" src="../../media/lpf_eq.png"/> </media>
+
+</para><para id="eip-143">Given this transfer function, we can calculate the cutoff frequency to be 18,086 Hz. We could not find resistors and capacitors to have a cutoff frequency of exactly 20,000 Hz, but for audible sounds, we decided that 18,000 Hz will be enough to serve our purpose. </para></section><para id="delete_me">
+     <!-- Insert module text here -->
+  </para>
+</content>
+
+</document>

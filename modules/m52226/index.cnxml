@@ -1,0 +1,23 @@
+<document xmlns="http://cnx.rice.edu/cnxml">
+
+<title>Background</title>
+<metadata xmlns:md="http://cnx.rice.edu/mdml">
+  <md:content-id>m52226</md:content-id>
+  <md:title>Background</md:title>
+  <md:abstract>Background of our topic.</md:abstract>
+  <md:uuid>547c4d69-f37b-4543-83de-eb2c5a065893</md:uuid>
+</metadata>
+
+<content>
+  <section id="eip-355"><title>Current D/A Methods</title><para id="eip-221">
+Remember that there are many uses for D/A conversion, not just audio reproduction, so different methods are used for different practical applications. One of the most frequently used methods in industry is D/A converters that oversample or interpolate. Oversampling is where one samples a signal at a much higher frequency than is specified by the Nyquist rate. This means that it samples much more often than at twice the bandwidth of a signal. This oversampling usually result in effectively shifting the noise present in the important low frequencies into high frequencies which can then easily be low pass filtered. This results in D/A converters with high resolution and low cost. Another commonly used type, and the one that most closely reflects what we chose in our project, is a binary-weighted D/A converter. This type has more focus on hardware implications, rather than the software implications of the oversampling mentioned earlier. Binary-weighted D/A converters require components that take each of the bits entering the converter to a summing point where they add up to an accurate Vout value. The disadvantage to this method is that the D/A converter is inaccurate due to the individual tolerances of the components. A subcategory of this converter type is an R/2R ladder, that has resistor values of R and 2R for each of the input bit streams. This fixes the accuracy problem for low resolution converters since it is simple to find resistors of these R/2R values.
+</para></section><section id="eip-234"><title>What is a BeagleBone Black?</title><figure id="figure_BBB"><media id="beagle" alt="The BeagleBone Black">
+      <image mime-type="image/jpeg" src="../../media/BBB.jpg" height="500" width="750"/>
+   </media>
+
+</figure><para id="eip-439">The BeagleBone Black is a single-board embedded computer that is made with open source software and hardware for developmental purposes. For our project, we were provided a BeagleBone Black by the Department of Electrical and Computer Engineering at Rice University, but it is much cheaper than a full-fledged computer. Its processing power and storage space are much smaller, but if one plugged in an HDMI to a monitor and a USB to a keyboard, it can seem like a real computer running Linux. There are 46 total I/O pins but many of them are reserved for special uses, so only approximately 30 of them are general purpose I/O. With the processor speed and I/O count in mind, we chose our design to rely on using 8 pins and therefore 8 bits. Also note that the audio files we stored on the BeagleBone Black have exactly a 44.1kHz sampling rate. </para></section><para id="delete_me">
+     <!-- Insert module text here -->
+  </para>
+</content>
+
+</document>
